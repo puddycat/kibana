@@ -111,8 +111,18 @@ spec:
             - |
                 #!/bin/bash
 
-                . /opt/bitnami/scripts/libfs.sh
-                . /opt/bitnami/scripts/kibana-env.sh
+                function is_dir_empty ()
+                {
+                    [ -z "$(ls -A $1 2>/dev/null)" ];
+                }
+
+                if [ -f /opt/bitnami/scripts/libfs.sh ]; then
+                    . /opt/bitnami/scripts/libfs.sh
+                fi;
+
+                if [ -f /opt/bitnami/scripts/kibana-env.sh ]; then
+                    . /opt/bitnami/scripts/kibana-env.sh
+                fi;
 
                 if ! is_dir_empty "$SERVER_DEFAULT_PLUGINS_DIR"; then
                     cp -nr "$SERVER_DEFAULT_PLUGINS_DIR"/* /plugins

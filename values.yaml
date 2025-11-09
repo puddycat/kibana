@@ -86,7 +86,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: raymondstrose/kibana
-  tag: 9.1.2
+  tag: 9.2.0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -814,10 +814,14 @@ elasticsearch:
   ##   - elasticsearch-1
   ##   - elasticsearch-2
   ##
-  hosts: []
+  #hosts: []
+  hosts:
+    - elasticsearch
+    #- elasticsearch.develop.svc.cluster.local
   ## @param elasticsearch.port Elasticsearch port
   ##
-  port: ""
+  #port: ""
+  port: "9201"
   security:
     auth:
       ## @param elasticsearch.security.auth.enabled Set to 'true' if Elasticsearch has authentication enabled

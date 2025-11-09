@@ -1,12 +1,12 @@
 annotations:
   images: |
     - name: kibana
-      image: docker.io/raymondstrose/kibana:9.1.2
+      image: docker.io/raymondstrose/kibana:9.2.0
     - name: os-shell
       image: docker.io/raymondstrose/ubuntu:20.04
   licenses: Apache-2.0
 apiVersion: v2
-appVersion: 9.1.2
+appVersion: 9.2.0
 #dependencies:
 #- name: common
 #  repository: oci://registry-1.docker.io/bitnamicharts
