@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 #
-# https://hub.docker.com/_/kibana
+# kibana/containers//bin/build-all
 #
+# raymondstrose@hotmail.com
+#
+#   https://hub.docker.com/_/kibana
+#
+
 docker network create search;
 docker run -d --name kibana --net search -p 5601:5601 kibana:9.2.0;

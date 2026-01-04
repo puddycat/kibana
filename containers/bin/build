@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# kibana/bin/build
+# kibana/containers//bin/build
 #
 # raymondstrose@hotmail.com
 #

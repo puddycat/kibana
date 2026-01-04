@@ -1,7 +1,7 @@
 #
-# kibana/Dockerfile
+# kibana/containers/Dockerfile
 #
-#   Create an Kibana Docker image.
+#   Create a Kibana Docker image.
 #
 #   docker build -f Dockerfile  \
 #       --build-arg BASE_IMAGE="kibana" \
