@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# kibana/bin/helm-install
+# kibana/helm/bin/helm-install
 #
 # raymondstrose@hotmail.com
 #
@@ -157,9 +157,9 @@ main ()
 	export DEBUG_MODE=false;
 	export VERBOSE_MODE=false;
 	export NOOP_MODE=false;
-	export IMAGE_PREFIX="";
+	export IMAGE_PREFIX="raymondstrose";
 	export IMAGE_NAME="kibana";
-	export IMAGE_TAG="14.5-alpine3.16";
+	export IMAGE_TAG="9.2.0";
 	export USE_BUILDX=true;
 	#export BUILDX_PLATFORMS="linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6";
 	export BUILDX_PLATFORMS="linux/amd64,linux/arm64,linux/arm/v7";
