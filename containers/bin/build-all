@@ -1,10 +1,12 @@
 #! /usr/bin/env bash
 #
-# kibana/containers//bin/build-all
+# kibana/containers/bin/build-all
 #
 # raymondstrose@hotmail.com
 #
 #   Build Kibana Docker images.
 #
 
-for name in 7.17.29 8.18.8 8.19.6 9.1.6 9.2.0; do bin/build --base-image-tag=$name; done;
+for name in 7.17.29 8.18.8 8.19.6 9.1.6 9.2.0; do
+	bin/build --base-image-tag=$name;
+done;
