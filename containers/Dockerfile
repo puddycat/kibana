@@ -20,6 +20,10 @@ FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG}
 LABEL MAINTAINER=raymondstrose@hotmail.com
 
 ARG	KIBANA_VERSION
+ENV APP_VERSION="${KIBANA_VERSION}" \
+    BITNAMI_APP_NAME="kibana" \
+    IMAGE_REVISION="2" \
+    PATH="/opt/kibana/bin:$PATH"
 
 COPY opt /opt
 
