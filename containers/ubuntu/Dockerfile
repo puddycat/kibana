@@ -1,5 +1,5 @@
 #
-# kibana/containers/Dockerfile
+# kibana/containers/ubuntu/Dockerfile
 #
 # raymondstrose@hotmail.com
 #
