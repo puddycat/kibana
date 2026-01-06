@@ -329,12 +329,9 @@ generate_systemd_conf() {
     fi
     # Generate the Systemd unit
     cat > "$service_file" <<EOF
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
-
 [Unit]
-Description=Bitnami service for ${name}
-# Starting/stopping the main bitnami service should cause the same effect for this service
+Description=Service for ${name}
+# Starting/stopping the main service should cause the same effect for this service
 PartOf=bitnami.service
 
 [Service]
@@ -417,7 +414,7 @@ EOF
     cat >> "$service_file" <<EOF
 
 [Install]
-# Enabling/disabling the main bitnami service should cause the same effect for this service
+# Enabling/disabling the main service should cause the same effect for this service
 WantedBy=bitnami.service
 EOF
 }
