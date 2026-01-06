@@ -1,15 +1,12 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for managing files
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/libos.sh
-
-# Functions
+. /opt/lib/os
 
 ########################
 # Replace a regex-matching string in a file

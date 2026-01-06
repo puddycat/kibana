@@ -1,16 +1,13 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for network functions
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libvalidations.sh
-
-# Functions
+. /opt/lib/logging
+. /opt/lib/validations
 
 ########################
 # Resolve IP address for a host/domain (i.e. DNS lookup)

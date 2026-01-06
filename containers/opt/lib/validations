@@ -1,15 +1,12 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Validation functions library
+#
 
 # shellcheck disable=SC1091,SC2086
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
-
-# Functions
+. /opt/lib/logging
 
 ########################
 # Check if the provided argument is an integer

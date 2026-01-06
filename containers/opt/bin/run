@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+# shellcheck disable=SC1091
+
+set -o errexit;
+set -o nounset;
+set -o pipefail;
+# set -o xtrace;
+
+# Load libraries
+. /opt/lib/kibana;
+. /opt/lib/os;
+. /opt/lib/logging;
+
+# Load environment
+. /opt/lib/environment;
+
+info "** Starting Kibana **";
+start_command=("${SERVER_BIN_DIR}/kibana" "serve");
+if am_i_root; then
+    exec_as_user "$SERVER_DAEMON_USER" "${start_command[@]}";
+else
+    exec "${start_command[@]}";
+fi;

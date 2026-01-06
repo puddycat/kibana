@@ -1,18 +1,15 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
-# Bitnami custom library
+# Custom library
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
+. /opt/lib/logging
 
 # Constants
 BOLD='\033[1m'
-
-# Functions
 
 ########################
 # Print the welcome page

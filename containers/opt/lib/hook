@@ -1,14 +1,13 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library to use for scripts expected to be used as Kubernetes lifecycle hooks
+#
 
 # shellcheck disable=SC1091
 
 # Load generic libraries
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libos.sh
+. /opt/lib/logging
+. /opt/lib/os
 
 # Override functions that log to stdout/stderr of the current process, so they print to process 1
 for function_to_override in stderr_print debug_execute; do

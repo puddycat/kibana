@@ -1,16 +1,13 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for managing services
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/libvalidations.sh
-. /opt/bitnami/scripts/liblog.sh
-
-# Functions
+. /opt/lib/validations
+. /opt/lib/logging
 
 ########################
 # Read the provided pid file and returns a PID

@@ -1,17 +1,14 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for operating system actions
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libfs.sh
-. /opt/bitnami/scripts/libvalidations.sh
-
-# Functions
+. /opt/lib/logging
+. /opt/lib/fs
+. /opt/lib/validations
 
 ########################
 # Check if an user exists in the system

@@ -1,15 +1,12 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for file system actions
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
-
-# Functions
+. /opt/lib/logging
 
 ########################
 # Ensure a file/directory is owned (user and group) but the given user

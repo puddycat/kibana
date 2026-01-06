@@ -1,15 +1,13 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Library for managing versions strings
+#
 
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/liblog.sh
+. /opt/lib/logging
 
-# Functions
 ########################
 # Gets semantic version
 # Arguments:

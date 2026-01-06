@@ -27,5 +27,5 @@ COPY opt /opt
 
 USER 1001
 
-ENTRYPOINT [ "/opt/kibana/entrypoint" ]
-CMD [ "/opt/kibana/run" ]
+ENTRYPOINT [ "/opt/bin/entrypoint" ]
+CMD [ "/opt/bin/run" ]

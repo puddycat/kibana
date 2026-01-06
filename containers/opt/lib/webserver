@@ -1,13 +1,12 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
-# Bitnami web server handler library
+# Web server handler library
+#
 
 # shellcheck disable=SC1090,SC1091
 
 # Load generic libraries
-. /opt/bitnami/scripts/liblog.sh
+. /opt/lib/logging
 
 ########################
 # Execute a command (or list of commands) with the web server environment and library loaded
@@ -23,7 +22,7 @@ web_server_execute() {
     shift
     # Run program in sub-shell to avoid web server environment getting loaded when not necessary
     (
-        . "/opt/bitnami/scripts/lib${web_server}.sh"
+        . "/opt/lib/${web_server}.sh"
         . "/opt/bitnami/scripts/${web_server}-env.sh"
         "$@"
     )
