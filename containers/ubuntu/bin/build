@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# kibana/containers/ubuntu/bin/build
+# kibana/containers/kibana/bin/build
 #
 # raymondstrose@hotmail.com
 #
@@ -58,11 +58,108 @@ build_docker_image ()
 		return 0;
 	}
 
-	TARGET_VERSION="${DOCKER_IMAGE_TAG}";
-	[ "$DST_IMAGE" ] || DST_IMAGE="$DOCKER_IMAGE_PREFIX$DOCKER_IMAGE_NAME:$TARGET_VERSION";
-	[ "$BASE_IMAGE" ] || BASE_IMAGE="raymondstrose/ubuntu";
-	[ "$BASE_IMAGE_TAG" ] || BASE_IMAGE_TAG="20.04";
-	[ "$DOCKERFILE" ] || DOCKERFILE="$INSTALL_DIR/Dockerfile";
+#	[ "$DST_IMAGE" ] || DST_IMAGE="$TARGET_IMAGE_PREFIX$TARGET_IMAGE_NAME:$TARGET_IMAGE_TAG";
+#	[ "$BASE_IMAGE" ] || BASE_IMAGE="raymondstrose/ubuntu";
+#	[ "$BASE_IMAGE_TAG" ] || BASE_IMAGE_TAG="24.04";
+#	[ "$DOCKERFILE" ] || DOCKERFILE="$INSTALL_DIR/Dockerfile";
+
+	local BASE_IMAGE;
+	local BASE_IMAGE_TAG;
+	local DOCKERFILE;
+	local TARGET_IMAGE_PREFIX;
+	local TARGET_IMAGE_NAME;
+	local TARGET_IMAGE_TAG;
+	local DST_IMAGE;
+	local GIT_REPO_TAG;
+	local PROCESS_WITH_SCOUT=false;
+	local KIBANA_VERSION;
+
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		--scout) PROCESS_WITH_SCOUT=true;;
+		--no-scout) PROCESS_WITH_SCOUT=false;;
+		--kibana-version|--kibana-version=?*)
+			case "$1" in
+			--kibana-version)	KIBANA_VERSION="$2"; shift;;
+			--kibana-version=?*)	KIBANA_VERSION="${1#--kibana-version=}";;
+			esac;;
+		--git-repo-tag|--git-repo-tag=?*)
+			case "$1" in
+			--git-repo-tag)	GIT_REPO_TAG="$2"; shift;;
+			--git-repo-tag=?*)	GIT_REPO_TAG="${1#--git-repo-tag=}";;
+			esac;;
+		--target-image-name|--target-image-name=?*)
+			case "$1" in
+			--target-image-name)	TARGET_IMAGE_NAME="$2"; shift;;
+			--target-image-name=?*)	TARGET_IMAGE_NAME="${1#--target-image-name=}";;
+			esac;;
+		--target-image-tag|--target-image-tag=?*)
+			case "$1" in
+			--target-image-tag)		TARGET_IMAGE_TAG="$2"; shift;;
+			--target-image-tag=?*)	TARGET_IMAGE_TAG="${1#--target-image-tag=}";;
+			esac;;
+		--target-image-prefix|--target-image-prefix=?*)
+			case "$1" in
+			--target-image-prefix)		TARGET_IMAGE_PREFIX="$2"; shift;;
+			--target-image-prefix=?*)	TARGET_IMAGE_PREFIX="${1#--target-image-prefix=}";;
+			esac;;
+		--dockerfile|--dockerfile=?*)
+			case "$1" in
+			--dockerfile)		DOCKERFILE="$2"; shift;;
+			--dockerfile=?*)	DOCKERFILE="${1#--dockerfile=}";;
+			esac;;
+		--base-image-name|--base-image-name=?*)
+			case "$1" in
+			--base-image-name)		BASE_IMAGE="$2"; shift;;
+			--base-image-name=?*)	BASE_IMAGE="${1#--base-image-name=}";;
+			esac;;
+		--base-image-tag|--base-image-tag=?*)
+			case "$1" in
+			--base-image-tag)	BASE_IMAGE_TAG="$2"; shift;;
+			--base-image-tag=?*)	BASE_IMAGE_TAG="${1#--base-image-tag=}";;
+			esac;;
+		--docker-context|--docker-context=?*)
+			case "$1" in
+			--docker-context)		BUILD_DOCKER_CONTEXT="$2"; shift;;
+			--docker-context=?*)	BUILD_DOCKER_CONTEXT="${1#--docker-context=}";;
+			esac;;
+		--image-name|--image-name=?*)
+			case "$1" in
+			--image-name)		IMAGE_NAME="$2"; shift;;
+			--image-name=?*)	IMAGE_NAME="${1#--image-name=}";;
+			esac;;
+		--image-tag|--image-tag=?*)
+			case "$1" in
+			--image-tag)	IMAGE_TAG="$2"; shift;;
+			--image-tag=?*)	IMAGE_TAG="${1#--image-tag=}";;
+			esac;;
+		--docker-host|--docker-host=?*)
+			case "$1" in
+			--docker-host)		DOCKER_HOST="$2"; shift;;
+			--docker-host=?*)	DOCKER_HOST="${1#--docker-host=}";;
+			esac;;
+		--config-dir|--config-dir=?*)
+			case "$1" in
+			--config-dir)		CONFIG_DIR="$2"; shift;;
+			--config-dir=?*)	CONFIG_DIR="${1#--config-dir=}";;
+			esac;
+
+		# Load the specified configuration files.
+			load_config || return $?;;
+		--debug)	$DEBUG_MODE && set -x; DEBUG_MODE=true;;
+		--noop)		NOOP_MODE=true;;
+		--verbose)	VERBOSE_MODE=true;;
+		--help) usage; return 2;;
+		--) shift; break;;
+		-*)	error "unknown option \"$1\""; usage; return 1;;
+		*)	error "unrecognised command line argument \"$1\""; usage; return 1;;
+		esac;
+
+		shift;
+	done;
+
+	#KIBANA_VERSION="${TARGET_IMAGE_TAG}";
+	DST_IMAGE="$TARGET_IMAGE_PREFIX$TARGET_IMAGE_NAME:$TARGET_IMAGE_TAG";
 
 # Docker buildx support.
 # When enabled, images for multiple platforms are built.
@@ -71,12 +168,15 @@ build_docker_image ()
 
 		execute docker buildx build	\
 			--platform $BUILDX_PLATFORMS	\
+			--load	\
 			--build-arg BASE_IMAGE="$BASE_IMAGE" \
 			--build-arg BASE_IMAGE_TAG="$BASE_IMAGE_TAG" \
-			--build-arg RABBITMQ_VERSION="$DOCKER_IMAGE_TAG"	\
+			--build-arg TARGET_IMAGE_NAME="$TARGET_IMAGE_NAME" \
+			--build-arg TARGET_IMAGE_TAG="$TARGET_IMAGE_TAG" \
+			--build-arg GIT_REPO_TAG="v$GIT_REPO_TAG" \
+			--build-arg KIBANA_VERSION="$KIBANA_VERSION"	\
 			-t "$DST_IMAGE"	\
 			-f "$DOCKERFILE"	\
-			--push	\
 			$INSTALL_DIR;
 
 		if [ $? -ne 0 ]; then
@@ -86,11 +186,15 @@ build_docker_image ()
 	else
 		execute docker build	\
 			--platform $BUILDX_PLATFORMS	\
+			--load	\
 			--build-arg BASE_IMAGE="$BASE_IMAGE" \
 			--build-arg BASE_IMAGE_TAG="$BASE_IMAGE_TAG" \
+			--build-arg TARGET_IMAGE_NAME="$TARGET_IMAGE_NAME" \
+			--build-arg TARGET_IMAGE_TAG="$TARGET_IMAGE_TAG" \
+			--build-arg GIT_REPO_TAG="v$GIT_REPO_TAG" \
+			--build-arg KIBANA_VERSION="$KIBANA_VERSION"	\
 			-t "$DST_IMAGE"	\
 			-f "$DOCKERFILE"	\
-			--push	\
 			"$INSTALL_DIR";
 
 		if [ $? -ne 0 ]; then
@@ -99,11 +203,18 @@ build_docker_image ()
 		fi;
 	fi;
 
-	execute docker scout quickview $DST_IMAGE;
-	execute docker scout cves $DST_IMAGE;
-	execute docker scout recommendations $DST_IMAGE;
+	if $PROCESS_WITH_SCOUT; then
+		execute docker scout quickview $DST_IMAGE;
+		execute docker scout cves $DST_IMAGE;
+		execute docker scout recommendations $DST_IMAGE;
+	fi;
 
 	return 0;
+}
+
+publish_docker_image ()
+{
+	execute docker push "$DST_IMAGE";
 }
 
 main ()
@@ -117,8 +228,8 @@ main ()
 
 			--base-image-name {name}    Specify the Docker base image name (default: $BASE_IMAGE)
 			--base-image-tag {tag}      Specify the Docker base image tag (default: $BASE_IMAGE_TAG)
-			--image-name {name}         Specify the Docker image name (default: $DOCKER_IMAGE_NAME)
-			--image-tag {tag}           Specify the Docker image tag (default: $DOCKER_IMAGE_TAG)
+			--image-name {name}         Specify the Docker image name (default: $TARGET_IMAGE_NAME)
+			--image-tag {tag}           Specify the Docker image tag (default: $TARGET_IMAGE_TAG)
 			--docker-context {name}     Specify the Docker context for the build (default: $BUILD_DOCKER_CONTEXT)
 			--docker-host {spec}        Specify the Docker host as per https://docs.docker.com/engine/security/protect-access/ (default $DOCKER_HOST)
 			--config-dir {path}         Specify the configuration directory (default: $CONFIG_DIR)
@@ -160,27 +271,26 @@ main ()
 		default_values ()
 		{
 			cat <<-EOF
-				DEBUG_MODE			false
-				VERBOSE_MODE		false
-				REMOVE_MODE			false
-				NOOP_MODE			false
-				LIST_MODE			false
+				DEBUG_MODE				false
+				VERBOSE_MODE			false
+				REMOVE_MODE				false
+				NOOP_MODE				false
+				LIST_MODE				false
 
-				BUILDX_ENABLE		true
-				BUILDX_PLATFORMS	"linux/amd64,linux/arm64"
-				BUILD_HOME_DIR		"/home/build"
-				BUILD_UID			"1001"
+				BUILDX_ENABLE			true
+				BUILDX_PLATFORMS		"linux/amd64,linux/arm64"
+				BUILD_HOME_DIR			"/home/build"
+				BUILD_UID				"1001"
 
-				KIBANA_VERSION	    "9.2.0"
+				BASE_IMAGE          	"ubuntu"
+				BASE_IMAGE_TAG	    	"24.04"
 
-				BASE_IMAGE          "kibana"
-				BASE_IMAGE_TAG	    "\$KIBANA_VERSION"
-
-				DOCKER_IMAGE_PREFIX	"raymondstrose/"
-				DOCKER_IMAGE_NAME	"kibana"
-				DOCKER_IMAGE_TAG	"\$BASE_IMAGE_TAG"
-				DOCKER_SCAN			false
-				DOCKER_IMAGE_PUSH	false
+				TARGET_IMAGE_PREFIX		"raymondstrose/"
+				TARGET_IMAGE_NAME		"kibana"
+				KIBANA_VERSION	"9.2.0"
+				TARGET_IMAGE_TAG		"\$KIBANA_VERSION"
+				DOCKER_SCAN				false
+				TARGET_IMAGE_PUSH		false
 				EOF
 		}
 
@@ -209,6 +319,23 @@ main ()
 
 	while [ $# -gt 0 ]; do
 		case "$1" in
+		--target-image-name|--target-image-name=?*)
+			case "$1" in
+			--target-image-name)	TARGET_IMAGE_NAME="$2"; shift;;
+			--target-image-name=?*)	TARGET_IMAGE_NAME="${1#--target-image-name=}";;
+			esac;;
+		--target-image-tag|--target-image-tag=?*)
+			case "$1" in
+			--target-image-tag)		TARGET_IMAGE_TAG="$2"; shift;;
+			--target-image-tag=?*)	TARGET_IMAGE_TAG="${1#--target-image-tag=}";;
+			esac;
+
+			KIBANA_VERSION="$TARGET_IMAGE_TAG";;
+		--target-image-prefix|--target-image-prefix=?*)
+			case "$1" in
+			--target-image-prefix)		TARGET_IMAGE_PREFIX="$2"; shift;;
+			--target-image-prefix=?*)	TARGET_IMAGE_PREFIX="${1#--target-image-prefix=}";;
+			esac;;
 		--base-image-name|--base-image-name=?*)
 			case "$1" in
 			--base-image-name)		BASE_IMAGE="$2"; shift;;
@@ -218,10 +345,7 @@ main ()
 			case "$1" in
 			--base-image-tag)	BASE_IMAGE_TAG="$2"; shift;;
 			--base-image-tag=?*)	BASE_IMAGE_TAG="${1#--base-image-tag=}";;
-			esac;
-
-			DOCKER_IMAGE_TAG="$BASE_IMAGE_TAG";;
-
+			esac;;
 		--docker-context|--docker-context=?*)
 			case "$1" in
 			--docker-context)		BUILD_DOCKER_CONTEXT="$2"; shift;;
@@ -264,10 +388,52 @@ main ()
 
 	debug "$(env)";
 
-	execute build_docker_image;
+	mkdir -p $WORK_DIR;
+
+	[ "$DST_IMAGE" ] || DST_IMAGE="$TARGET_IMAGE_PREFIX$TARGET_IMAGE_NAME:$TARGET_IMAGE_TAG";
+	[ "$BASE_IMAGE" ] || BASE_IMAGE="raymondstrose/ubuntu";
+	[ "$BASE_IMAGE_TAG" ] || BASE_IMAGE_TAG="24.04";
+	[ "$DOCKERFILE" ] || DOCKERFILE="$INSTALL_DIR/Dockerfile";
+	GIT_REPO_TAG="$TARGET_IMAGE_TAG";
+
+# Build the container image to build the software
+	execute build_docker_image	\
+		--no-scout	\
+		--dockerfile="Dockerfile.builder"	\
+		--git-repo-tag="$GIT_REPO_TAG"	\
+		--kibana-version="$KIBANA_VERSION"	\
+		--target-image-prefix="$TARGET_IMAGE_PREFIX"	\
+		--target-image-name="$TARGET_IMAGE_NAME"	\
+		--target-image-tag="$TARGET_IMAGE_TAG-builder"	\
+		--base-image-name="$BASE_IMAGE"	\
+		--base-image-tag="$BASE_IMAGE_TAG";
+
+	if [ $? -ne 0 ]; then
+		error "Failed to build Docker image builder";
+		return 1;
+	fi;
+
+# Build the container image to host the previously built software
+	execute build_docker_image	\
+		--scout	\
+		--dockerfile="Dockerfile"	\
+		--git-repo-tag="$GIT_REPO_TAG"	\
+		--kibana-version="$KIBANA_VERSION"	\
+		--target-image-prefix="$TARGET_IMAGE_PREFIX"	\
+		--target-image-name="$TARGET_IMAGE_NAME"	\
+		--target-image-tag="$TARGET_IMAGE_TAG"	\
+		--base-image-name="$BASE_IMAGE"	\
+		--base-image-tag="$BASE_IMAGE_TAG";
 
 	if [ $? -ne 0 ]; then
 		error "Failed to build Docker image";
+		return 1;
+	fi;
+
+	execute publish_docker_image;
+
+	if [ $? -ne 0 ]; then
+		error "Failed to publish Docker image";
 		return 1;
 	fi;
 
