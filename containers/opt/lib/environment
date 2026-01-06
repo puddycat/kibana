@@ -1,8 +1,7 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
 # Environment configuration for kibana
+#
 
 # The values for all environment variables will be set in the below order of precedence
 # 1. Custom environment variables defined below after Bitnami defaults
@@ -12,10 +11,10 @@
 
 # Load logging library
 # shellcheck disable=SC1090,SC1091
-. /opt/bitnami/scripts/liblog.sh
+. /opt/lib/logging
 
-export BITNAMI_ROOT_DIR="/opt/bitnami"
-export BITNAMI_VOLUME_DIR="/bitnami"
+export BITNAMI_ROOT_DIR="/opt"
+export BITNAMI_VOLUME_DIR="/"
 
 # Logging configuration
 export MODULE="${MODULE:-kibana}"
@@ -76,7 +75,7 @@ unset kibana_env_vars
 export SERVER_FLAVOR="kibana"
 
 # Paths
-export BITNAMI_VOLUME_DIR="/bitnami"
+export BITNAMI_VOLUME_DIR="/"
 export KIBANA_VOLUME_DIR="${BITNAMI_VOLUME_DIR}/kibana"
 export SERVER_VOLUME_DIR="$KIBANA_VOLUME_DIR"
 export KIBANA_BASE_DIR="${BITNAMI_ROOT_DIR}/kibana"

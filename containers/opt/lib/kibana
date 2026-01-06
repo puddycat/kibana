@@ -1,18 +1,17 @@
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
-# Bitnami Kibana library
+# Kibana library
+#
 
 # shellcheck disable=SC1090
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/libfs.sh
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libos.sh
-. /opt/bitnami/scripts/libservice.sh
-. /opt/bitnami/scripts/libvalidations.sh
+. /opt/lib/fs
+. /opt/lib/logging
+. /opt/lib/os
+. /opt/lib/service
+. /opt/lib/validations
 
 # Functions
 
@@ -80,22 +79,21 @@ kibana_create_system_user() {
     fi
 }
 
-#!/bin/bash
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+#! /usr/bin/env bash
 #
-# Bitnami Kibana/Opensearch Dashboards common library
+# Kibana/Opensearch Dashboards common library
+#
 
 # shellcheck disable=SC1090
 # shellcheck disable=SC1091
 
 # Load Generic Libraries
-. /opt/bitnami/scripts/libfs.sh
-. /opt/bitnami/scripts/libfile.sh
-. /opt/bitnami/scripts/liblog.sh
-. /opt/bitnami/scripts/libos.sh
-. /opt/bitnami/scripts/libservice.sh
-. /opt/bitnami/scripts/libvalidations.sh
+. /opt/lib/fs
+. /opt/lib/file
+. /opt/lib/logging
+. /opt/lib/os
+. /opt/lib/service
+. /opt/lib/validations
 
 # Functions
 
