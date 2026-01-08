@@ -34,6 +34,14 @@ ENV APP_VERSION="${KIBANA_VERSION}" \
 RUN apt-get update && apt-get install -y wget curl
 RUN apt-get install -y net-tools nmap
 
+# Install NVM (use the latest version from the NVM GitHub page)
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash;	\
+	source ~/.bashrc;	\
+	apt-get install -y npm;	\
+	npm install -g yarn;	\
+	nvm use 22.17.1;	\
+	yarn set version 1.22.22;
+
 # Download compressed binary
 #RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_${YQ_PLATFORM}.tar.gz -O - | tar xz &&	\
 #	sudo mv yq_${PLATFORM} /usr/local/bin/yq &&	\
